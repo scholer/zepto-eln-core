@@ -194,7 +194,7 @@ def convert_md_file_to_html(
                 command line arguments > run-config > default-config.
     """
     print(f"\nconvert_md_file_to_html started, inputfn {inputfn!r}, outputfn {outputfn!r} ...", file=sys.stderr)
-    document = load_document(inputfn, add_fileinfo_to_meta=True, warn_yaml_scanner_error='raise')
+    document = load_document(inputfn, add_fileinfo_to_meta=True, yfm_parsing=True, yfm_errors='raise')
     # returns journal dict with keys 'content', 'meta', 'fileinfo', etc.
 
     # Pico %variable.attribute% substitution:

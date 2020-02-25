@@ -101,6 +101,7 @@ def compile_markdown_to_html(content, parser='python-markdown', extensions=None,
 def compile_markdown_document(
         path, outputfn="{filepath_noext}.html",
         parser='python-markdown', extensions=None,
+        yfm_parsing=True, yfm_errors='ignore',
         do_pico_substitution=True, do_apply_template=True,
         template_type='jinja2', template=None, template_dir=None, default_template_name='index',
         template_vars=None,
@@ -112,6 +113,9 @@ def compile_markdown_document(
         outputfn: Save compiled HTML to this file. If '-', write HTML to stdout.
         parser: The Markdown parser to use to generate HTML.
         extensions: The Markdown extensions to use when compiling HTML.
+        yfm_parsing: If True, try to parse front-matter from document.
+        yfm_errors: How to respond when errors are encountered during YFM parsing, e.g. 'raise', 'warn', or 'ignore'.
+            See document_io.load_document() for info.
         do_pico_substitution: Do Pico substitutions on the Markdown before compiling Markdown to HTML.
         do_apply_template: Apply a template (e.g. Jinja template).
         template_type: The templating system to use, e.g. 'jinja2'.
@@ -128,7 +132,8 @@ def compile_markdown_document(
         Document dict, with 'html' entry storing the compiled HTML.
 
     """
-    document = load_document(path)  # dict with 'content', 'meta', 'filename', etc.
+    # load_document returns a dict with 'content', 'meta', 'filename', etc.
+    document = load_document(path, yfm_parsing=yfm_parsing, yfm_errors=yfm_errors, meta_if_no_yfm={})
 
     if do_pico_substitution:
         # Perform %pico_variable% substitution:

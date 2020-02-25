@@ -21,17 +21,17 @@ def apply_template_file_to_document(
     """ Locate the proper template file to use and apply it to the document.
 
     Args:
-        document:
-        template_type:
-        template:
-        template_dir:
+        document: the document (dict) that should be processed by the templating system.
+        template_type: The templating system to use. Currently only 'jinja' is supported.
+        template: The template to use (name).
+        template_dir: Where to look for template files.
         default_template_name:
 
     Returns:
         html (str) and also updates document['html'] in-place.
 
     See also:
-
+        apply_template
 
     """
     if template_vars is None:
@@ -68,14 +68,15 @@ def apply_template_file_to_document(
 
 
 def apply_template(template, template_vars, template_type='jinja2'):
-    """
+    """ Generate HTML using the the given template and template_vars, with templating system specified by template_type.
 
     Args:
-        template:
-        template_vars:
-        template_type:
+        template: The template to use.
+        template_vars: Interpolate template with these variables.
+        template_type: The templating system to use. Currently only 'jinja2' is supported.
 
     Returns:
+        htm (text string)
 
     See also:
 
@@ -100,6 +101,15 @@ def apply_template(template, template_vars, template_type='jinja2'):
 
 
 def get_templates_in_dir(template_dir, glob_patterns=('*.jinja',)):
+    """ Return a dict of templates in the given template directory.
+
+    Args:
+        template_dir:
+        glob_patterns:
+
+    Returns:
+        dict, with template_name: filename
+    """
 
     files = [fn for pat in glob_patterns for fn in sorted(glob.iglob(os.path.join(template_dir, pat)))]
     print(f"\nTemplate files in {template_dir!r}:", file=sys.stderr)

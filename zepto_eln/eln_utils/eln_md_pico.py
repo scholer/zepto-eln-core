@@ -112,7 +112,7 @@ from collections import defaultdict
 import pathlib
 from pprint import pprint
 
-from zepto_eln.md_utils.document_io import load_all_documents_metadata, load_document
+from zepto_eln.md_utils.document_io import load_all_documents_metadata, load_document, DocumentYfmError
 
 REQUIRED_PICO_KEYS = ('title', 'description', 'author', )
 REQUIRED_EXP_KEYS = ('expid', 'titledesc', 'status', 'startdate', 'enddate', 'result')
@@ -214,9 +214,9 @@ def print_document_yfm_issues(
     for file in files:
         # print("Parsing file:", file)
         try:
-            doc = load_document(file, add_fileinfo_to_meta=True, warn_yaml_scanner_error='raise')
-        except (yaml.scanner.ScannerError, yaml.parser.ParserError, yaml.constructor.ConstructorError, ValueError) as e:
-            print(f"Failed to load file {file} ({e.__class__.__name__})")
+            doc = load_document(file, add_fileinfo_to_meta=True, yfm_parsing=True, yfm_errors='raise')
+        except (DocumentYfmError, IOError) as exc:
+            print(f"Failed to load file {file}: {exc!r}")
             continue
         # doc.pop('raw_content')
         # pprint(doc)
@@ -226,11 +226,3 @@ def print_document_yfm_issues(
         if missing:
             print("FILE:", meta['filename'])
             print(" - MISSING KEYS:", missing)
-    # journals = load_all_documents_metadata(
-    #     basedir=basedir, add_fileinfo_to_meta=True, warn_yaml_scanner_error='report', exclude_if_missing_yfm=True
-    # )
-    # for meta in journals:
-    #     missing = required_keys.difference(meta.keys())
-    #     if missing:
-    #         print("FILE:", meta['filename'])
-    #         print(" - MISSING KEYS:", missing)
